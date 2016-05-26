@@ -17,7 +17,7 @@ var (
 
 type Regression struct {
 	names             describe
-	data              []*dataPoint
+	data              []*DataPoint
 	coeff             map[int]float64
 	R2                float64
 	Varianceobserved  float64
@@ -26,7 +26,7 @@ type Regression struct {
 	Formula           string
 }
 
-type dataPoint struct {
+type DataPoint struct {
 	Observed  float64
 	Variables []float64
 	Predicted float64
@@ -39,11 +39,11 @@ type describe struct {
 }
 
 // Creates a new dataPoint
-func DataPoint(obs float64, vars []float64) *dataPoint {
-	return &dataPoint{Observed: obs, Variables: vars}
+func NewDataPoint(obs float64, vars []float64) *DataPoint {
+	return &DataPoint{Observed: obs, Variables: vars}
 }
 
-// Predict updates the "Predicted" value for the input dataPoint
+// Predict updates the "Predicted" value for the input DataPoint
 func (r *Regression) Predict(vars []float64) (float64, error) {
 	if !r.initialised {
 		return 0, errNotEnoughData
@@ -83,16 +83,16 @@ func (r *Regression) GetVar(i int) string {
 	return x
 }
 
-// Train the regression with some data points
-func (r *Regression) Train(d ...*dataPoint) {
+// AddDataPoint for train regression
+func (r *Regression) AddDataPoint(d []*DataPoint) {
 	r.data = append(r.data, d...)
 	if len(r.data) > 2 {
 		r.initialised = true
 	}
 }
 
-// Run the regression
-func (r *Regression) Run() error {
+// Train the regression
+func (r *Regression) Train() error {
 	if !r.initialised {
 		return errNotEnoughData
 	}
@@ -206,8 +206,8 @@ func (r *Regression) calcResiduals() string {
 	return str
 }
 
-// Display a dataPoint as a string
-func (d *dataPoint) String() string {
+// Display a DataPoint as a string
+func (d *DataPoint) String() string {
 	str := fmt.Sprintf("%.2f", d.Observed)
 	for _, v := range d.Variables {
 		str += fmt.Sprintf("|\t%.2f", v)
